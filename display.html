@@ -15,7 +15,7 @@
             align-items: center;
             background-color: #ffffff;
             overflow: hidden;
-            background: linear-gradient(180deg, #ffffff, #f8f8ff);
+            background: linear-gradient(180deg, #e6f3ff, #f0f8ff);
         }
 
         /* 名字显示容器的基础样式 */
@@ -405,9 +405,45 @@
                 margin-left: 50px;
             }
         }
+
+        /* 刷新按钮样式 */
+        .refresh-button {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: transparent;
+            color: #0066cc;
+            border: 2px solid #0066cc;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+
+        .refresh-button:hover {
+            background: #0066cc;
+            color: white;
+            transform: translateX(-50%) rotate(180deg);
+        }
+
+        .refresh-button i {
+            transition: all 0.3s ease;
+        }
+
+        .refresh-button:hover i {
+            transform: rotate(180deg);
+        }
     </style>
     <!-- 引入 Google 字体 -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Roboto:wght@900&family=Dancing+Script:wght@700&family=Pacifico&family=Permanent+Marker&family=Abril+Fatface&family=Monoton&family=Press+Start+2P&family=Great+Vibes&family=Fredoka+One&family=Righteous&family=Comforter+Brush&family=Rubik+Glitch&display=swap" rel="stylesheet">
+    <!-- 引入 Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="sakura-container"></div>
@@ -415,6 +451,9 @@
     <button class="back-button" onclick="window.location.href='index.html'">返回</button>
     <!-- 名字显示容器 -->
     <div id="nameDisplay"></div>
+    <button class="refresh-button" onclick="location.reload()">
+        <i class="fas fa-sync-alt"></i>
+    </button>
 
     <script>
         /**
@@ -465,8 +504,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const name = decodeURIComponent(urlParams.get('name'));
             const nameDisplay = document.getElementById('nameDisplay');
-            nameDisplay.textContent = name;
-
+            
             // 字体样式数组
             const styles = [
                 'style1', 'style2', 'style3', 'style4', 'style5', 
@@ -492,8 +530,23 @@
             const randomStyle = styles[Math.floor(Math.random() * styles.length)];
             const randomEntrance = entrances[Math.floor(Math.random() * entrances.length)];
             
-            // 应用样式和动画
-            nameDisplay.className = `${randomStyle} entrance ${randomEntrance}`;
+            // 先设置文字内容和基本样式
+            nameDisplay.textContent = name;
+            nameDisplay.className = randomStyle;
+
+            // 使用 setTimeout 确保基本样式先被应用
+            setTimeout(() => {
+                // 添加入场动画类
+                nameDisplay.classList.add('entrance', randomEntrance);
+                
+                // 监听动画结束事件
+                nameDisplay.addEventListener('animationend', function handler() {
+                    // 移除入场动画相关类，但保留字体样式类
+                    nameDisplay.classList.remove('entrance', randomEntrance);
+                    // 移除事件监听器
+                    nameDisplay.removeEventListener('animationend', handler);
+                });
+            }, 0);
         }
 
         // 页面加载完成后启动樱花效果

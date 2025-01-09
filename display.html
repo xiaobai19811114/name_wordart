@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>名字展示</title>
+    <style>
+        /* 基础页面样式 */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            overflow: hidden;
+            background: linear-gradient(180deg, #ffffff, #f8f8ff);
+        }
+
+        /* 名字显示容器的基础样式 */
+        #nameDisplay {
+            font-size: 4rem;
+            transition: all 0.5s ease;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        /* 样式1：优雅的衬线字体 */
+        .style1 {
+            font-family: 'Playfair Display', serif;
+            color: #2c3e50;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-weight: 900;
+        }
+
+        /* 样式2：现代无衬线字体配合发光效果 */
+        .style2 {
+            font-family: 'Roboto', sans-serif;
+            color: #e74c3c;
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e74c3c;
+            font-weight: 900;
+        }
+
+        /* 样式3：手写风格字体 */
+        .style3 {
+            font-family: 'Dancing Script', cursive;
+            color: #27ae60;
+            transform: rotate(-5deg);
+            font-weight: 700;
+        }
+
+        /* 样式4：弹跳效果字体 */
+        .style4 {
+            font-family: 'Pacifico', cursive;
+            color: #9b59b6;
+            transform-origin: center;
+            font-weight: bold;
+        }
+
+        /* 样式5：马克笔风格 */
+        .style5 {
+            font-family: 'Permanent Marker', cursive;
+            color: #e67e22;
+            text-shadow: 4px 4px 0px #2c3e50;
+            transform: skew(-5deg);
+            font-weight: bold;
+        }
+
+        /* 样式6：彩虹色变换效果 */
+        .style6 {
+            font-family: 'Abril Fatface', cursive;
+            color: #16a085;
+            font-weight: bold;
+        }
+
+        /* 样式7：霓虹灯效果 */
+        .style7 {
+            font-family: 'Monoton', cursive;
+            color: #e74c3c;
+            text-shadow: 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #e74c3c;
+            font-weight: bold;
+        }
+
+        /* 样式8：像素游戏风格 */
+        .style8 {
+            font-family: 'Press Start 2P', cursive;
+            color: #f1c40f;
+            text-shadow: 2px 2px 0 #95a5a6;
+            font-weight: bold;
+        }
+
+        /* 样式9：优雅书法风格 */
+        .style9 {
+            font-family: 'Great Vibes', cursive;
+            color: #8e44ad;
+            transform: rotate(-3deg);
+            text-shadow: 2px 4px 4px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+
+        /* 样式10：摇摆动画效果 */
+        .style10 {
+            font-family: 'Fredoka One', cursive;
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        /* 样式11：渐变文字效果 */
+        .style11 {
+            font-family: 'Righteous', cursive;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        /* 样式12：笔触波浪效果 */
+        .style12 {
+            font-family: 'Comforter Brush', cursive;
+            color: #2ecc71;
+            transform-origin: center;
+            font-weight: bold;
+        }
+
+        /* 样式13：故障艺术效果 */
+        .style13 {
+            font-family: 'Rubik Glitch', cursive;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        /* 返回按钮样式 */
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: transparent;
+            color: #0066cc;
+            border: 2px solid #0066cc;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* 返回按钮悬停效果 */
+        .back-button:hover {
+            background: #0066cc;
+            color: white;
+        }
+
+        /* 入场动画基础类 */
+        .entrance {
+            opacity: 0;
+            animation-duration: 1.5s;
+            animation-fill-mode: forwards;
+            animation-iteration-count: 1;
+        }
+
+        /* 1. 淡入放大 */
+        .entrance-fade-zoom {
+            animation-name: fadeZoom;
+            animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 2. 从下滑入 */
+        .entrance-slide-up {
+            animation-name: slideUp;
+            animation-timing-function: ease-out;
+        }
+
+        /* 3. 旋转淡入 */
+        .entrance-rotate {
+            animation-name: rotateIn;
+            animation-timing-function: ease-in-out;
+        }
+
+        /* 4. 弹性放大 */
+        .entrance-elastic {
+            animation-name: elasticScale;
+            animation-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* 5. 翻转入场 */
+        .entrance-flip {
+            animation-name: flip;
+            animation-timing-function: ease-in-out;
+        }
+
+        /* 6. 3D旋转 */
+        .entrance-rotate-3d {
+            animation-name: rotate3d;
+            animation-timing-function: ease-in-out;
+        }
+
+        /* 7. 波浪摆动 */
+        .entrance-wave {
+            animation-name: waveIn;
+            animation-timing-function: ease-in-out;
+        }
+
+        /* 8. 弹跳入场 */
+        .entrance-bounce {
+            animation-name: bounceIn;
+            animation-timing-function: cubic-bezier(0.36, 0, 0.66, -0.56);
+        }
+
+        /* 9. 螺旋入场 */
+        .entrance-spiral {
+            animation-name: spiralIn;
+            animation-timing-function: ease-out;
+        }
+
+        /* 10. 摇摆入场 */
+        .entrance-swing {
+            animation-name: swingIn;
+            animation-timing-function: ease-in-out;
+        }
+
+        /* 动画关键帧定义 */
+        @keyframes fadeZoom {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.3);
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideUp {
+            0% { 
+                opacity: 0;
+                transform: translateY(100px);
+            }
+            100% { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes rotateIn {
+            0% { 
+                opacity: 0;
+                transform: rotate(-180deg);
+            }
+            100% { 
+                opacity: 1;
+                transform: rotate(0);
+            }
+        }
+
+        @keyframes elasticScale {
+            0% { 
+                opacity: 0;
+                transform: scale(0);
+            }
+            60% { 
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            100% { 
+                transform: scale(1);
+            }
+        }
+
+        @keyframes flip {
+            0% { 
+                opacity: 0;
+                transform: perspective(400px) rotateX(-90deg);
+            }
+            100% { 
+                opacity: 1;
+                transform: perspective(400px) rotateX(0);
+            }
+        }
+
+        @keyframes rotate3d {
+            0% { 
+                opacity: 0;
+                transform: perspective(1000px) rotateY(-90deg);
+            }
+            100% { 
+                opacity: 1;
+                transform: perspective(1000px) rotateY(0);
+            }
+        }
+
+        @keyframes waveIn {
+            0% { 
+                opacity: 0;
+                transform: scale(0) rotate(-45deg);
+            }
+            60% { 
+                opacity: 1;
+                transform: scale(1.2) rotate(10deg);
+            }
+            100% { 
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% { 
+                opacity: 0;
+                transform: scale(0.3) translateY(-200px);
+            }
+            50% { 
+                opacity: 0.8;
+                transform: scale(1.1) translateY(20px);
+            }
+            100% { 
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes spiralIn {
+            0% { 
+                opacity: 0;
+                transform: rotate(-540deg) scale(0);
+            }
+            100% { 
+                opacity: 1;
+                transform: rotate(0) scale(1);
+            }
+        }
+
+        @keyframes swingIn {
+            0% { 
+                opacity: 0;
+                transform: rotateX(-100deg);
+            }
+            60% { 
+                transform: rotateX(20deg);
+            }
+            100% { 
+                opacity: 1;
+                transform: rotateX(0);
+            }
+        }
+
+        /* 樱花容器 */
+        .sakura-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* 樱花样式 */
+        .sakura {
+            position: absolute;
+            background: #ffd7e6;
+            border-radius: 100% 0 100% 100%;
+            animation: fall linear infinite, sway ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        /* 生成5种不同大小的樱花 */
+        .sakura.small {
+            width: 10px;
+            height: 10px;
+            animation-duration: 6s, 3s;
+        }
+
+        .sakura.medium {
+            width: 15px;
+            height: 15px;
+            animation-duration: 8s, 4s;
+        }
+
+        .sakura.large {
+            width: 20px;
+            height: 20px;
+            animation-duration: 10s, 5s;
+        }
+
+        /* 樱花飘落动画 */
+        @keyframes fall {
+            0% {
+                top: -10%;
+                transform: translateX(0) rotateZ(0);
+            }
+            100% {
+                top: 100%;
+                transform: translateX(100px) rotateZ(360deg);
+            }
+        }
+
+        /* 樱花摇摆动画 */
+        @keyframes sway {
+            0%, 100% {
+                margin-left: 0;
+            }
+            50% {
+                margin-left: 50px;
+            }
+        }
+    </style>
+    <!-- 引入 Google 字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Roboto:wght@900&family=Dancing+Script:wght@700&family=Pacifico&family=Permanent+Marker&family=Abril+Fatface&family=Monoton&family=Press+Start+2P&family=Great+Vibes&family=Fredoka+One&family=Righteous&family=Comforter+Brush&family=Rubik+Glitch&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="sakura-container"></div>
+    <!-- 返回按钮 -->
+    <button class="back-button" onclick="window.location.href='index.html'">返回</button>
+    <!-- 名字显示容器 -->
+    <div id="nameDisplay"></div>
+
+    <script>
+        /**
+         * 创建樱花元素
+         */
+        function createSakura() {
+            const container = document.querySelector('.sakura-container');
+            const sizes = ['small', 'medium', 'large'];
+            const colors = ['#ffd7e6', '#ffcce0', '#ffc1d9']; // 不同深浅的粉色
+
+            // 创建一片樱花
+            const sakura = document.createElement('div');
+            sakura.className = `sakura ${sizes[Math.floor(Math.random() * sizes.length)]}`;
+            sakura.style.left = Math.random() * 100 + '%';
+            sakura.style.background = colors[Math.floor(Math.random() * colors.length)];
+            sakura.style.filter = `opacity(${0.6 + Math.random() * 0.4})`; // 随机透明度
+            container.appendChild(sakura);
+
+            // 动画结束后移除樱花
+            sakura.addEventListener('animationend', () => {
+                sakura.remove();
+            });
+        }
+
+        /**
+         * 持续生成樱花
+         */
+        function startSakura() {
+            // 初始生成一些樱花
+            for(let i = 0; i < 15; i++) {
+                setTimeout(createSakura, Math.random() * 3000);
+            }
+
+            // 持续生成新的樱花
+            setInterval(() => {
+                if(document.querySelectorAll('.sakura').length < 30) { // 限制最大数量
+                    createSakura();
+                }
+            }, 300);
+        }
+
+        /**
+         * 名字显示函数
+         * 从URL获取名字参数并随机应用样式和入场动画
+         */
+        function displayName() {
+            // 从URL获取名字参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = decodeURIComponent(urlParams.get('name'));
+            const nameDisplay = document.getElementById('nameDisplay');
+            nameDisplay.textContent = name;
+
+            // 字体样式数组
+            const styles = [
+                'style1', 'style2', 'style3', 'style4', 'style5', 
+                'style6', 'style7', 'style8', 'style9', 'style10',
+                'style11', 'style12', 'style13'
+            ];
+
+            // 入场动画数组
+            const entrances = [
+                'entrance-fade-zoom',
+                'entrance-slide-up',
+                'entrance-rotate',
+                'entrance-elastic',
+                'entrance-flip',
+                'entrance-rotate-3d',
+                'entrance-wave',
+                'entrance-bounce',
+                'entrance-spiral',
+                'entrance-swing'
+            ];
+
+            // 随机选择样式和入场动画
+            const randomStyle = styles[Math.floor(Math.random() * styles.length)];
+            const randomEntrance = entrances[Math.floor(Math.random() * entrances.length)];
+            
+            // 应用样式和动画
+            nameDisplay.className = `${randomStyle} entrance ${randomEntrance}`;
+        }
+
+        // 页面加载完成后启动樱花效果
+        window.addEventListener('load', () => {
+            startSakura();
+            displayName(); // 原有的名字显示函数
+        });
+    </script>
+</body>
+</html> 
